@@ -1,0 +1,81 @@
+/* BASIC */
+#root,body{
+    min-height: 100vh;
+}
+
+/* FLEX */
+.d-flex{
+    display: flex;
+}
+
+.justify-content-end{
+    justify-content: flex-end;
+}
+
+.grow-0-5{
+    flex-grow: 0.5;
+}
+
+.grow-1{
+    flex-grow: 1;
+}
+
+.grow-7{
+    flex-grow: 7;
+}
+
+/* BORDERS */
+.border-top-2px-grey{
+    border-top: #cacde4 solid 2px;
+}
+
+.border-bottom-2px-grey{
+    border-bottom: #cacde4 solid 2px;
+}
+
+/* MARGINS */
+.margin-top-15px{
+    margin-top: 15px;
+}
+
+.margin-top-25px{
+    margin-top: 25px;
+}
+/* PADDINGS */
+.padding-right-20px{
+    padding-right: 20px;
+}
+
+.padding-left-20px{
+    padding-left: 20px;
+}
+
+.padding-right-50px{
+    padding-right: 50px;
+}
+
+/*CURSOR*/
+.pointer{
+    cursor: pointer;
+}
+/* FONT AWESOME */
+#add-folder, #file-upload, #folder-upload{
+    font-size: 20px;
+    color: #ff7703;
+}
+
+.item:hover {
+    background-color: #edf5ff;
+}
+
+.hide_file {
+    position: absolute;
+    z-index: 1000;
+    opacity: 0;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    height: 100%;
+    font-size: 24px;
+    width: 100%;
+  }

@@ -1,11 +1,10 @@
 import React from 'react';
-
+import Row from './Row';
 
 export default class FilesFolders extends React.Component{
     constructor(props) {
         super(props);
     }
-
 
     generateFilesAndFolders(){
         let { items } = this.props;
@@ -15,23 +14,7 @@ export default class FilesFolders extends React.Component{
         let files = items.filter((item) => {return item.type === 'file'}).sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 
         return [...folders, ...files].map((file) => (
-            <div className="pointer item" onClick={() => this.changeDirectory(file)} style={{ flexDirection: 'row', height: 35, borderBottom: '1px solid #eeeeee', alignItems: 'center', display: 'flex', paddingLeft: 10}}>
-                <div style={{flex: 0.65}}>
-                    <i id="file-upload" className={file.type == 'folder' ? "fas fa-folder" : "fas fa-file "}></i>&nbsp;
-                    <span style={{paddingLeft: 10}}>
-                        {file.name}
-                    </span>
-                </div>
-                <div style={{flex: 0.1, textAlign: 'center'}}>
-                    -
-                </div>
-                <div style={{flex: 0.1, textAlign: 'center'}}>
-                    {file.type}
-                </div>
-                <div style={{flex: 0.15, textAlign: 'center'}}>
-                    {file.date}
-                </div>
-            </div>
+            <Row file={file} changeDirectory={this.changeDirectory}/>
         ))
     }
 

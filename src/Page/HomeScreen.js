@@ -11,12 +11,15 @@ Modal.setAppElement = function (s) {
     Modal.setAppElement('#root');
 }
 
-export default class HomeScreen extends React.Component{
+export default class HomeScreen extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
             modalIsOpen:false,
             folderName: '',
+            parentFolder: '',
+            selectedFolder: undefined,
             items: []
         }
     }
@@ -44,8 +47,6 @@ export default class HomeScreen extends React.Component{
 
     async getFoldersAndFiles(){
         let data = this.findInTree();
-        //
-        console.log('dataaa', data);
         if(!data) {
             await this.setState({ items : []});
             return;
@@ -55,15 +56,14 @@ export default class HomeScreen extends React.Component{
             await this.setState({ items : [ data]});
         }
         else {
-            console.log('ok folder');
             if(data.children)
-                await this.setState({ items : data.children});
+                await this.setState({ items : data.children, parentFolder: data.name});
             else 
-                await this.setState({ items : []});
+                await this.setState({ items : [], parentFolder: data.name});
         }
     }
 
-    insertNewItem = async (data) => {
+    insertNewFile = async (data) => {
         let tree = JSON.parse(localStorage.getItem('repos'));
         let currentPath = window.location.pathname.split('/');
         currentPath.shift();
@@ -95,7 +95,6 @@ export default class HomeScreen extends React.Component{
 
     insertTree(parentName, newNode, tree){
         let newTree = this.insertRec(parentName, newNode, tree);
-        console.log(newTree);
         return newTree;
     }
 
@@ -103,7 +102,6 @@ export default class HomeScreen extends React.Component{
         //insert here
         if(node.name === parentName[0] && parentName.length > 1){
             if(parentName[0]=== '') {
-                console.log(parentName, '++++++++++++++++++++++++++++');
                 if(!node.children){
                     node.children = [];
                 }
@@ -111,7 +109,7 @@ export default class HomeScreen extends React.Component{
     
                 //update state
                 let { items } = this.state;
-                this.setState({ items :  [...items, newNode]})
+                //this.setState({ items :  [...items, newNode]})
     
                 return node
             }
@@ -126,7 +124,8 @@ export default class HomeScreen extends React.Component{
 
             //update state
             let { items } = this.state;
-            this.setState({ items :  [...items, newNode]})
+            items.push(newNode);
+            this.setState({ items : items})
 
             return node
         }
@@ -139,12 +138,11 @@ export default class HomeScreen extends React.Component{
                 node.children[i] = this.insertRec(parentName,newNode, node.children[i]);
         }
         
-        return node;
+        return node
     }
 
     findRec(label, node){
         let result = null;
-        console.log(node);
         if(node.name === label) return node;
         
         for (let i = 0; i < node.children.length; i++){
@@ -168,11 +166,9 @@ export default class HomeScreen extends React.Component{
         let currentPath = window.location.pathname.split('/');
         let nodeName = currentPath[currentPath.length - 1];
         currentPath.shift();
-        console.log('tree',tree);
         if(nodeName === "") return tree;
 
         let node = this.findRec(nodeName, tree);
-        console.log(node, tree);
         return node;
     }
 
@@ -187,22 +183,40 @@ export default class HomeScreen extends React.Component{
         this.getFoldersAndFiles();
     }
 
+    backDirectory = () => {
+        history.goBack();
+    }
+
     render() {
         return(
           <div className="home-screen">
-              <div className="d-flex border-top-2px-grey justify-content-end padding-right-20px">
-                  <NewFolder
-                      onClick={this.showModal}
-                  />
-                  <FileUpload addNewFile={this.insertNewItem}/>
-                  <FolderUpload />
+              <div className="border-top-2px-grey" style={{display: 'flex', marginLeft: 20}}>
+                <div style={{flex: 0.5, display:'flex', alignItems: 'center'}}>
+                    <span className="pointer" onClick={this.backDirectory}>
+                        {this.state.parentFolder != '' && <i style={{color: 'gray'}} className="fas fa-arrow-left"></i>}&nbsp;
+                    </span>
+                    <span style={{color: 'gray', paddingLeft: 20 }}>
+                        {this.state.parentFolder}
+                    </span>
+                </div>
+                <div style={{flex: 0.5}} className="d-flex  justify-content-end padding-right-20px">
+                    <NewFolder
+                        onClick={this.showModal}
+                    />
+                    <FileUpload addNewFile={this.insertNewFile}/>
+                    <FolderUpload />
+                </div>
               </div>
+              
               <div className=" padding-left-20px padding-right-20px">
                   <FilesFolders items={this.state.items} changeDirectory={this.changeDirectory}/>
                   <Modal
                       isOpen={this.state.modalIsOpen}
                       onRequestClose={this.hideModal}
                       style={{
+                          overlay:{
+                              backgroundColor: 'rgba(115, 119, 119, 0.75)'
+                          },
                           content: {
                               width:'500px',
                               height: '300px',

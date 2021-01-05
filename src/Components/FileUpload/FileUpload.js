@@ -14,15 +14,7 @@ export default class FileUpload extends React.Component{
         let her = this;
         if (event.target.files && event.target.files[0]) {
             let file = event.target.files[0];
-            this.setState({ popUpImageFile : file});
-
-            console.log(file);
             this.props.addNewFile({name : file.name, size: file.size, date: new Date});
-            var reader = new FileReader();
-            reader.onloadend = function() {
-                her.setState({ popUpImageBase64: reader.result});
-            }
-            reader.readAsDataURL(file);
         }
     }
 
